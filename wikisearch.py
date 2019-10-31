@@ -28,9 +28,11 @@ def get_links(TITLE):
     R = S.get(url=URL, params=PARAMS)
     return R.json()
 
-#get the 50 most common words in the specified page
-def get_50_most_common(page):
-    pattern = "([a-zA-Z]+(?:'[a-z]+)?)"
+def lemmatize_stemming(text):
+    return stemmer.stem(WordNetLemmatizer().lemmatize(text, pos='v'))
+
+def preprocess(page):
+     pattern = "([a-zA-Z]+(?:'[a-z]+)?)"
     tokens_raw = nltk.regexp_tokenize(page.content, pattern)
     tokens = [word.lower() for word in tokens_raw]
 
@@ -38,7 +40,11 @@ def get_50_most_common(page):
     stopwords_list += list(string.punctuation)
     stopwords_list += ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
-    words_stopped = [word for word in tokens if word not in stopwords_list]
+    return [lemmatize_stemming(word) for word in tokens if word not in stopwords_list and len(word) > 3]
+
+#get the 50 most common words in the specified page
+def get_50_most_common(page):
+    words_stopped = preprocess(page)
 
     freqdist = FreqDist(words_stopped)
     return freqdist.most_common(50)
@@ -47,15 +53,7 @@ def get_50_most_common(page):
 #get the normalized values for the 50 most common words in  the 
 #spcified page
 def normalized_top_50(page):
-    pattern = "([a-zA-Z]+(?:'[a-z]+)?)"
-    tokens_raw = nltk.regexp_tokenize(page.content, pattern)
-    tokens = [word.lower() for word in tokens_raw]
-
-    stopwords_list = stopwords.words('english')
-    stopwords_list += list(string.punctuation)
-    stopwords_list += ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
-
-    words_stopped = [word for word in tokens if word not in stopwords_list]
+    words_stopped = preprocess(page)
 
     freqdist = FreqDist(words_stopped)
     top_50 = freqdist.most_common(50)
