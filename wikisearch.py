@@ -7,6 +7,7 @@ from nltk.corpus import stopwords
 import nltk.collocations
 from nltk import FreqDist, word_tokenize
 import string
+from nltk.stem import WordNetLemmatizer, SnowballStemmer
 import re
 
 
@@ -29,10 +30,11 @@ def get_links(TITLE):
     return R.json()
 
 def lemmatize_stemming(text):
+    stemmer = SnowballStemmer("english")
     return stemmer.stem(WordNetLemmatizer().lemmatize(text, pos='v'))
 
 def preprocess(page):
-     pattern = "([a-zA-Z]+(?:'[a-z]+)?)"
+    pattern = "([a-zA-Z]+(?:'[a-z]+)?)"
     tokens_raw = nltk.regexp_tokenize(page.content, pattern)
     tokens = [word.lower() for word in tokens_raw]
 
