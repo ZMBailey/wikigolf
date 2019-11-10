@@ -35,7 +35,7 @@ def lemmatize_stemming(text):
 
 def preprocess(page):
     pattern = "([a-zA-Z]+(?:'[a-z]+)?)"
-    tokens_raw = nltk.regexp_tokenize(page.content, pattern)
+    tokens_raw = nltk.regexp_tokenize(page, pattern)
     tokens = [word.lower() for word in tokens_raw]
 
     stopwords_list = stopwords.words('english')
