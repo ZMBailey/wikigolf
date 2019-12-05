@@ -12,20 +12,20 @@ import re
 
 
 
-# def lemmatize_stemming(text):
-#     stemmer = SnowballStemmer("english")
-#     return stemmer.stem(WordNetLemmatizer().lemmatize(text, pos='v'))
+def lemmatize_stemming(text):
+    stemmer = SnowballStemmer("english")
+    return stemmer.stem(WordNetLemmatizer().lemmatize(text, pos='v'))
 
-# def preprocess(page):
-#     pattern = "([a-zA-Z]+(?:'[a-z]+)?)"
-#     tokens_raw = nltk.regexp_tokenize(page, pattern)
-#     tokens = [word.lower() for word in tokens_raw]
+def preprocess(page):
+    pattern = "([a-zA-Z]+(?:'[a-z]+)?)"
+    tokens_raw = nltk.regexp_tokenize(page, pattern)
+    tokens = [word.lower() for word in tokens_raw]
 
-#     stopwords_list = stopwords.words('english')
-#     stopwords_list += list(string.punctuation)
-#     stopwords_list += ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    stopwords_list = stopwords.words('english')
+    stopwords_list += list(string.punctuation)
+    stopwords_list += ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
-#     return [lemmatize_stemming(word) for word in tokens if word not in stopwords_list and len(word) > 3]
+    return [lemmatize_stemming(word) for word in tokens if word not in stopwords_list and len(word) > 3]
 
 #get the 50 most common words in the specified page
 def get_50_most_common(page):
