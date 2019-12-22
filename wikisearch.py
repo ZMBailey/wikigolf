@@ -109,31 +109,32 @@ def make_model(current,target):
 
 
 def check_links(model,current,target,visited):
-
+    
     #get links from current
-    #check links against model for relevence to target subject
     links = current.links
     success = []
     errors = []
+    
+    #check links against model for relevence to target subject
     for l in links:
         for word in l.split(' '):
             word = word.lower()
             try:
-                dist = model.wv.distance(word,target.title)
-                if dist < 0.008 and l not in visited:
-                    success.append((l,dist))
-                    break
+                for targetword in target.split(' '):
+                    dist = model.wv.distance(word,targetword.lower())
+                    if dist < 0.02 and l not in visited:
+                        success.append((l,dist))
+                        break
             except KeyError:
                 errors.append(word)
-    
+    #if related links found, use most related link, otherwise random
     if len(success) > 0:
-        success.sort(key=lambda tup: tup[0])
+        success.sort(key=lambda tup: tup[1])
         return success[0][0]
     else:
         skiplist = ['Wikipedia', 'Category']
         title = links[np.random.randint(0,len(links))]
         while any(sub in title for sub in skiplist):
-            #print(title)
             title = links[np.random.randint(0,len(links))]
         print(title)
         return title
