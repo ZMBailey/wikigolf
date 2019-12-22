@@ -51,45 +51,8 @@ def normalized_top_50(page):
         normalized.append((word[0],"{:.4}".format(normalized_frequency)))
     return normalized
 
-def get_link(current, target):
 
-    #get current and target
-    #combine into list
-    page_text = current.content.split(".") + target.content.split(".")
-
-    text = []
-
-     #format for word2vec
-    for clue in page_text:
-        sentence = clue.translate(str.maketrans('','',string.punctuation)).split(' ')
-        new_sent = [word.lower() for word in sentence]   
-        text.append(new_sent)
-    
-    #create model
-    model = gensim.models.Word2Vec(text,sg=1)
-    model.train(text, total_examples=model.corpus_count, epochs=model.epochs)
-    
-    #get links from current
-    #check links against model for relevence to target subject
-    links = current.links
-    success = []
-    errors = []
-    for l in links:
-        for word in l.split(' '):
-            word = word.lower()
-            try:
-                if model.wv.distance(word,"batman") < 0.008:
-                    success.append(l)
-                    break
-            except KeyError:
-                errors.append(word)
-                
-    #need to find way to track relevence of links, find most relevent             
-    if len(success) > 0:            
-        return success[0]
-    else:
-        return False
-    
+#Create Word2Vec model from two documents
 def make_model(current,target):
     #combine into list
     page_text = current.content.split(".") + target.content.split(".")
@@ -108,6 +71,8 @@ def make_model(current,target):
     return model
 
 
+#Check links for similarity to target. If no links fall within similarity threshold,
+#then select a random link.
 def check_links(model,current,target,visited):
     
     #get links from current
