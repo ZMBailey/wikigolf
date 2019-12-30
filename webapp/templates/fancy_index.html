@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>The Movie Theme-eter</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="css/bootstrap.css" rel="stylesheet">
+
+  <!-- Custom fonts for this template -->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="css/grayscale.css" rel="stylesheet">
+
+  <script type="text/javascript" src="brython.js"></script>
+  <script type="text/javascript" src="brython_stdlib.js"></script>
+
+  <link rel="shortcut icon" href="#">
+</head>
+<!-- if idx == 4 or idx == 7 or idex == 9:
+              html += '<br />' -->
+<body id="page-top" onload="brython(1)">
+
+    <script type="text/python3">
+      from browser import document, ajax
+      import json
+      import warnings
+
+      def print_error(code):
+        if code == -1:
+          text = "Movie has no plot description, unable to analyze."
+        if code == -2:
+          text = "That movie does not appear to exist.<br />"
+          text += "Summaries are sourced from Wikipedia, please check the title used by wikipedia."
+
+        html = '<div class="card text-white bg-warning mb-3" style="max-width: 20rem;">'
+        html += '<div class="card-body">'
+        html += '<p class="card-text">' + text + '</p></div></div>'
+        document["error_block"].html = html
+      
+      def topic_html(topic,keywords):
+          if topic == "":
+             img = ""
+          else: 
+             img = '<img src="/img/icons/' + topic.replace(" ","_") + '.png" style="height:36px; width:36px";>'
+          html = '<div class="card-header" style="font-size:16pt;"><div style="margin-right:10px; display:inline-block;">' + img + '</div>'
+          html += '<div style="display:inline-block">' + topic + '</div></div><div class="card-body">'
+          html += '<p class="card-text">'
+          for idx,word in enumerate(keywords):
+            if idx != 0:
+              html += ', '
+            html += word
+          html += '.</p></div>'
+          return html
+
+      def show_results(response):
+          if response.status==200 or response.status==0:
+              data = json.loads(response.response)
+              if data['topics'] == -1 or data['topics'] == -2:
+                print_error(data['topics'])
+              else:
+                document["error_block"].html = ''
+                document["movie_title"].html = 'Themes for: ' + data['title']
+                for i in range(4):
+                  document["topic" + str(i+1)].html = topic_html(data['topics'][i],
+                                                                data['keywords'][i])
+          else:
+              warnings.warn(response.text)
+
+      def get_prediction(ev):
+          """Get the predicted probability."""
+          req = ajax.ajax()
+          req.bind('complete', show_results)
+          req.open('POST', '/predict', True)
+          req.set_header('content-type','application/json')
+          data = json.dumps({'user_input': document['user_input'].value})
+          req.send(data)
+
+      document["theme_button"].bind("click", get_prediction)
+      document["user_input"].bind("Enter", get_prediction)
+    </script>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" style="display:none" id="mainNav">
+      <div class="container">
+        <a class="navbar-brand js-scroll-trigger" href="#page-top">Start Bootstrap</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          Menu
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#about">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#projects">Projects</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#signup">Contact</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+  <!-- Header -->
+  <header class="masthead">
+    <div class="container d-flex h-100 align-items-center">
+      <div class="mx-auto text-center"  style="margin-top:30px">
+        <h1 class="mx-auto my-0 text-uppercase">Movie Theme-eter</h1>
+        <h2 class="text-white-50 mx-auto mt-2 mb-5">Find Movie Themes with no spoilers</h2>
+        <div class="text-white-50" style="margin-bottom: 10px;">Want to know what a movie is about, but don't want to spoil the plot?</br>
+        Enter a movie title and get the major themes of the story.</div>
+        <section id="signup" class="signup-section">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-10 col-lg-8 mx-auto text-center" style='margin-bottom: 60px;'>
+      
+                <div class="form-inline d-flex">
+                  <input type="text" id="user_input" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" style="border:0.1rem solid #000;" placeholder="Enter a movie title..."></textarea>
+                  <button id="theme_button" type="submit" class="btn btn-primary mx-auto">Theme It</button>
+                </div>
+      
+              </div>
+            </div>
+      
+            <div>
+                <div class="row" style="display: flex; justify-content: center;">
+                    <div class="card border-dark mb-3" style="width: 60%;">
+                        <div class="card-header"  style="font-size:14pt;">
+                          <span id='movie_title' class="card-text"></span>
+                        </div>
+                      </div>
+                </div>
+            </div>
+            <div id="error_block" class="row" style="display: flex; justify-content: center;"></div>
+            
+            </div>
+      
+            <div class="row" style="display: flex; justify-content: center;">
+                <div class="col-lg-4">
+                  <div class="bs-component">
+                      <div id="topic1" class="card border-secondary mb-3" style="max-width: 30rem; min-height: 9rem;">
+                          
+                      </div>
+                      <div id="topic3" class="card border-secondary mb-3" style="max-width: 30rem; min-height: 9rem;">
+                          
+                      </div>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="bs-component">
+                        <div id="topic2" class="card border-secondary mb-3" style="max-width: 30rem; min-height: 9rem;">
+                            
+                        </div>
+                        <div id="topic4" class="card border-secondary mb-3" style="max-width: 30rem; min-height: 9rem;">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </header>
+
+  <!-- Footer -->
+  <footer class="bg-black small text-center text-white-50" style="padding-top:20px;">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4">
+          Alexander Bailey<br />
+          zbailey656 &commat; gmail.com 
+        </div>
+        <div class="col-lg-4">
+            <div style="margin-right:10px; display:inline-block;">
+              <a href="http://github.com/zmbailey">
+                <img src="img/GitHub-Mark-Light-32px.png" />
+              </a>
+            </div>
+            <div style="margin-right:10px; display:inline-block;">
+              <a href="http://github.com/zmbailey">github.com/zmbailey</a>
+            </div>
+            <br />
+            <div style="margin-right:10px; display:inline-block;">
+                <a href="http://www.linkedin.com/in/alexander-bailey/">
+                  <img src="img/LI-In-Bug.png" style="height:32px;"/>
+                </a>
+              </div>
+              <div style="margin-right:10px; display:inline-block;">
+                <a href="http://www.linkedin.com/in/alexander-bailey/">linkedin.com/in/alexander-bailey/</a>
+            </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Plugin JavaScript -->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for this template -->
+  <script src="js/grayscale.min.js"></script>
+
+</body>
+
+</html>

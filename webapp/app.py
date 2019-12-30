@@ -15,6 +15,6 @@ def index():
 def predict():
     """Return a prediction of P(spam)."""
     data = request.json
-    title,found = ws.run_golf(data['start'],data['target'])
-    return jsonify({'title':title,'found':found})
+    title,found, hops = ws.run_golf(data['start'],data['target'])
+    return jsonify({'title':title,'found':found, 'hops':hops})
 

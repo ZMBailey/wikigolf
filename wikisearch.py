@@ -154,6 +154,6 @@ def run_golf(start,target):
         i += 1
         
     if exit:
-        return title, exit
+        return title, exit, i
     else:
-        return closest[0], exit
+        return closest[0], exit, i
