@@ -1,4 +1,5 @@
 import random
+import wikigolf.wikisearch as ws
 from flask import Flask, request, render_template, jsonify
 
 
@@ -14,7 +15,6 @@ def index():
 def predict():
     """Return a prediction of P(spam)."""
     data = request.json
-    theme = Themeter()
-    topics,keywords,name = theme.find_topics(data['user_input'])
-    return jsonify({'topics':topics,'keywords':keywords,'title':name})
+    title,found = ws.run_golf(data['start'],data['target'])
+    return jsonify({'title':title,'found':found})
 
