@@ -3,6 +3,7 @@ import requests
 import wikipedia
 import gensim
 import nltk
+import sys
 from nltk.corpus import stopwords
 import nltk.collocations
 from nltk import FreqDist, word_tokenize
@@ -101,5 +102,58 @@ def check_links(model,current,target,visited):
         title = links[np.random.randint(0,len(links))]
         while any(sub in title for sub in skiplist):
             title = links[np.random.randint(0,len(links))]
-        print(title)
         return title
+    
+    
+def run_golf(start,target):
+
+    #set up initial variables
+    target_page = wikipedia.page(target)
+    closest = ("none",sys.maxsize)
+    path = [start]
+    visited = set(start)
+    title = start
+    exit = False
+    i = 0
+
+    #for i in range(100):
+    while not exit:
+        try:
+            #test for target page
+            if title.lower() == target.lower():
+                exit = True
+                break
+            #get next page
+            current = wikipedia.page(title)
+            #create model
+            model = make_model(current,target_page)
+            #get common words in current page
+            top_20 = get_50_most_common(current.content)[:20]
+
+            #test for similarity to target page
+            for word,freq in top_20:
+                try:
+                    for target_word in preprocess(target_page.title):
+                        dist = model.wv.distance(word,target_word)
+                        if dist < 0.0016 and closest[1] < dist:
+                                closest = (title, dist)
+                except KeyError:
+                    pass
+            search_success = True
+        except wikipedia.exceptions.DisambiguationError:
+            search_success = False
+        except wikipedia.exceptions.PageError:
+            search_success = False
+
+        #get next link
+        title = check_links(model,current,target,visited)
+        visited.add(title)
+        path.append(title)
+        if i % 100 == 0:
+            print(".",end="")
+        i += 1
+        
+    if exit:
+        return title, exit
+    else:
+        return closest[0], exit
