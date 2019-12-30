@@ -1,0 +1,52 @@
+<html>
+  <head>
+    <title>Predict</title>
+    <script type="text/javascript" src="brython.js"></script>
+    <script type="text/javascript" src="brython_stdlib.js"></script>
+  </head>
+  <body onload="brython(1)">
+    <script type="text/python3">
+      from browser import document, ajax, window
+      import json
+      import warnings
+
+      def show_results(response):
+          if response.status==200 or response.status==0:
+              data = json.loads(response.response)
+              document["topic1"].html = data['topics'][0] + '<br />'
+              document["topic2"].html = data['topics'][1]
+              document["topic3"].html = data['topics'][2]
+              document["topic4"].html = data['topics'][3]
+          else:
+              warnings.warn(response.text)
+
+      def get_prediction(ev):
+          """Get the predicted probability."""
+          req = ajax.ajax()
+          req.bind('complete', show_results)
+          req.open('POST', '/predict', True)
+          req.set_header('content-type','application/json')
+          data = json.dumps({'user_input': document['user_input'].value})
+          req.send(data)
+
+      document["predict_button"].bind("click", get_prediction)
+    </script>
+    <script>
+        function press_enter(e) {
+                if (e.keyCode === 13) {
+                    var input = document.getElementById('user_input').innerHTML;
+                    get_prediction(input);
+                }
+    
+                return false;
+            };
+    
+        </script>
+    <input type="text" id="user_input"></input>
+    <button id="predict_button" type="button">Predict!</button>
+    <div id="topic1"></div>
+    <div id="topic2"></div>
+    <div id="topic3"></div>
+    <div id="topic4"></div>
+  </body>
+</html>
