@@ -14,11 +14,14 @@ import re
 
 #lemmatize a word - convert to a standard form.
 def lemmatize_stemming(text):
+    """Lemmatize a word and convert it to a standard form"""
     stemmer = SnowballStemmer("english")
     return stemmer.stem(WordNetLemmatizer().lemmatize(text, pos='v'))
 
 #preprocess a single document or page
 def preprocess(page):
+    """Preprocess a document or page
+    Tokenize, remove all stopwords from the document, and lemmatize each word."""
     pattern = "([a-zA-Z]+(?:'[a-z]+)?)"
     tokens_raw = nltk.regexp_tokenize(page, pattern)
     tokens = [word.lower() for word in tokens_raw]
@@ -31,6 +34,7 @@ def preprocess(page):
 
 #get the 50 most common words in the specified page
 def get_50_most_common(page):
+    """Returns the 50 most common words on the page."""
     words_stopped = preprocess(page)
 
     freqdist = FreqDist(words_stopped)
@@ -40,6 +44,7 @@ def get_50_most_common(page):
 #get the normalized values for the 50 most common words in  the 
 #spcified page
 def normalized_top_50(page):
+    """Returns the 50 most common words from the page with normalized scores."""
     words_stopped = preprocess(page)
 
     freqdist = FreqDist(words_stopped)
@@ -56,6 +61,7 @@ def normalized_top_50(page):
 
 #Create Word2Vec model from two documents
 def make_model(current,target):
+    """Accepts 2 documents and creates a Word2Vec model from both for comparison."""
     #combine into list
     page_text = current.content.split(".") + target.content.split(".")
 
@@ -76,7 +82,8 @@ def make_model(current,target):
 #Check links for similarity to target. If no links fall within similarity threshold,
 #then select a random link.
 def check_links(model,current,target,visited):
-    
+    """Uses the input model to check the similarity of the links in the current page
+    to the title of the target page."""
     #get links from current
     links = current.links
     success = []
@@ -108,7 +115,7 @@ def check_links(model,current,target,visited):
 
 #main program, runs the wikigolf program.
 def run_golf(start,target):
-
+    """Runs the main wikigolf program"""
     #set up initial variables
     target_page = wikipedia.page(target)
     closest = ("none",sys.maxsize)
