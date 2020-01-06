@@ -11,8 +11,8 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/predict', methods=['GET', 'POST'])
-def predict():
+@app.route('/find_page', methods=['GET', 'POST'])
+def find_page():
     """Return a prediction of P(spam)."""
     data = request.json
     title,found, hops = ws.run_golf(data['start'],data['target'])

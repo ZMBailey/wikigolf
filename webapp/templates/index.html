@@ -17,16 +17,16 @@
           else:
               warnings.warn(response.text)
 
-      def get_prediction(ev):
+      def start_wikigolf(ev):
           """Get the predicted probability."""
           req = ajax.ajax()
           req.bind('complete', show_results)
-          req.open('POST', '/predict', True)
+          req.open('POST', '/find_page', True)
           req.set_header('content-type','application/json')
           data = json.dumps({'start': document['start'].value, 'target': document['target'].value})
           req.send(data)
 
-      document["predict_button"].bind("click", get_prediction)
+      document["predict_button"].bind("click", start_wikigolf)
     </script>
     <script>
         function press_enter(e) {
