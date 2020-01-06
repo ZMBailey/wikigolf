@@ -12,11 +12,12 @@ from nltk.stem import WordNetLemmatizer, SnowballStemmer
 import re
 
 
-
+#lemmatize a word - convert to a standard form.
 def lemmatize_stemming(text):
     stemmer = SnowballStemmer("english")
     return stemmer.stem(WordNetLemmatizer().lemmatize(text, pos='v'))
 
+#preprocess a single document or page
 def preprocess(page):
     pattern = "([a-zA-Z]+(?:'[a-z]+)?)"
     tokens_raw = nltk.regexp_tokenize(page, pattern)
@@ -104,7 +105,8 @@ def check_links(model,current,target,visited):
             title = links[np.random.randint(0,len(links))]
         return title
     
-    
+
+#main program, runs the wikigolf program.
 def run_golf(start,target):
 
     #set up initial variables
