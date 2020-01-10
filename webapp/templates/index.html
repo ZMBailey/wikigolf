@@ -48,7 +48,7 @@
           data = json.dumps({'start': document['start'].value, 'target': document['target'].value})
           req.send(data)
 
-      document["predict_button"].bind("click", start_wikigolf)
+      document["search_button"].bind("click", start_wikigolf)
     </script>
   <!-- Navigation -->
 <!--   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
@@ -85,34 +85,20 @@
     </div>
   </header>
 
-  <!-- About Section -->
-  <section id="about" class="about-section text-center">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-8 mx-auto">
-          <h2 class="text-white mb-4">Built with Bootstrap 4</h2>
-          <p class="text-white-50">Grayscale is a free Bootstrap theme created by Start Bootstrap. It can be yours right now, simply download the template on
-            <a href="http://startbootstrap.com/template-overviews/grayscale/">the preview page</a>. The theme is open source, and you can use it for any purpose, personal or commercial.</p>
-        </div>
-      </div>
-      <img src="img/ipad.png" class="img-fluid" alt="">
-    </div>
-  </section>
-
   <!-- Signup Section -->
   <section id="signup" class="signup-section">
     <div class="container">
       <div class="row">
         <div class="col-md-10 col-lg-8 mx-auto text-center">
 
-          <i class="far fa-paper-plane fa-2x mb-2 text-white"></i>
-          <h2 class="text-white mb-5">Subscribe to receive updates!</h2>
-
-          <form class="form-inline d-flex">
-            <input type="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" id="inputEmail" placeholder="Enter email address...">
-            <button type="submit" class="btn btn-primary mx-auto">Subscribe</button>
-          </form>
-
+            <i class="far fa-paper-plane fa-2x mb-2 text-white"></i>
+            <h2 class="text-white mb-5">Choose a starting page and a destination, and see how many hops it takes!</h2>
+            <div>Note: Page titles must be as they appear on wikipedia, otherwise page inaccuracies may occur.</div>
+            <div>Starting page: </div><input type="text" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" id="start"></br>
+            <div>Destination page:</div><input type="test" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" id="target"></br>
+            <button type="submit" class="btn btn-primary mx-auto" id="search_button">Start Browsing!</button>
+            <hr />
+        <div id="title"></div>
         </div>
       </div>
     </div>
