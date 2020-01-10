@@ -123,10 +123,10 @@ def run_golf(start,target):
     visited = set(start)
     title = start
     exit = False
-    i = 0
+    #i = 0
 
     #for i in range(100):
-    while not exit:
+    for i in range(50):
         try:
             #test for target page
             if title.lower() == target.lower():
@@ -160,7 +160,7 @@ def run_golf(start,target):
         path.append(title)
         if i % 100 == 0:
             print(".",end="")
-        i += 1
+        #i += 1
         
     if exit:
         return title, exit, i

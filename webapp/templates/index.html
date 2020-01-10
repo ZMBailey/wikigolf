@@ -34,8 +34,11 @@
 
       def show_results(response):
           if response.status==200 or response.status==0:
-              data = json.loads(response.response)
-              document["title"].html = "Found " + data['title'] + " in " + str(data['hops']) + " hops!"
+              if found:
+                  data = json.loads(response.response)
+                  document["title"].html = "Found " + data['title'] + " in " + str(data['hops']) + " hops!"
+              else:
+                  document["title"].html = "Did not find " + document['target'].value + "in less than 50 hops."
           else:
               warnings.warn(response.text)
 
