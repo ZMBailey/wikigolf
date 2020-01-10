@@ -1,0 +1,48 @@
+<html>
+  <head>
+    <title>Predict</title>
+    <script type="text/javascript" src="brython.js"></script>
+    <script type="text/javascript" src="brython_stdlib.js"></script>
+  </head>
+  <body onload="brython(1)">
+    <script type="text/python3">
+      from browser import document, ajax, window
+      import json
+      import warnings
+
+      def show_results(response):
+          if response.status==200 or response.status==0:
+              data = json.loads(response.response)
+              document["title"].html = "Found " + data['title'] + " in " + str(data['hops']) + " hops!"
+          else:
+              warnings.warn(response.text)
+
+      def start_wikigolf(ev):
+          """Get the predicted probability."""
+          req = ajax.ajax()
+          req.bind('complete', show_results)
+          req.open('POST', '/find_page', True)
+          req.set_header('content-type','application/json')
+          data = json.dumps({'start': document['start'].value, 'target': document['target'].value})
+          req.send(data)
+
+      document["predict_button"].bind("click", start_wikigolf)
+    </script>
+    <script>
+        function press_enter(e) {
+                if (e.keyCode === 13) {
+                    var input = document.getElementById('user_input').innerHTML;
+                    get_prediction(input);
+                }
+    
+                return false;
+            };
+    
+        </script>
+    <div>Starting page: <input type="text" id="start"></input><br />
+      Target Page: <input type="text" id="target"></input></div>
+    <button id="predict_button" type="button">Search!</button>
+    <div id="title"></div>
+    <div id="title2"></div>
+  </body>
+</html>
