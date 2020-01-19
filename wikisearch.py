@@ -119,7 +119,7 @@ def check_links(model,current,target,visited):
             try:
                 for targetword in target.split(' '):
                     dist = model.wv.distance(word,targetword.lower())
-                    if dist < 0.02 and l not in visited:
+                    if dist < 0.08 and l not in visited:
                         success.append((l,dist))
                         break
             except KeyError:
