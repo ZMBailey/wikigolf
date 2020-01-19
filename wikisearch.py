@@ -79,6 +79,29 @@ def make_model(current,target):
     return model
 
 
+#testing different version
+def make_model_new(path):
+    """Accepts 2 documents and creates a Word2Vec model from both for comparison."""
+    #combine into list
+    page_text = []
+    for page in path:
+        page_content = page.content.split(".")
+        page_text += page_content
+
+    text = []
+
+     #format for word2vec
+    for clue in page_text:
+        sentence = clue.translate(str.maketrans('','',string.punctuation)).split(' ')
+        new_sent = [word.lower() for word in sentence]   
+        text.append(new_sent)
+    
+    #create model
+    model = gensim.models.Word2Vec(text,sg=1)
+    model.train(text, total_examples=model.corpus_count, epochs=model.epochs)
+    return model
+
+
 #Check links for similarity to target. If no links fall within similarity threshold,
 #then select a random link.
 def check_links(model,current,target,visited):
