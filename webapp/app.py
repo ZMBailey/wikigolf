@@ -1,5 +1,6 @@
 import random
 import wikigolf.wikisearch as ws
+import wikipedia
 from flask import Flask, request, render_template, jsonify
 
 
@@ -17,4 +18,13 @@ def find_page():
     data = request.json
     title,found, hops = ws.run_golf(data['start'],data['target'])
     return jsonify({'title':title,'found':found, 'hops':hops})
+
+
+@app.route('/get_titles', methods=['GET', 'POST'])
+def get_titles():
+    """Return the titles of the input pages."""
+    data = request.json
+    c = wikipedia.page(data['current'])
+    t = wikipedia.page(data['target'])
+    return jsonify({'current':c, 'target':t})
 
