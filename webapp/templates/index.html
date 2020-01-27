@@ -41,6 +41,25 @@
                   document["title"].html = "Did not find " + document['target'].value + "in less than 50 hops."
           else:
               warnings.warn(response.text)
+              
+      def show_titles(response):
+          if response.status==200 or response.status==0:
+              data = json.loads(response.response)
+              if data['found']:
+                  document["title"].html = "Found " + data['title'] + " in " + str(data['hops']) + " hops!"
+              else:
+                  document["title"].html = "Did not find " + document['target'].value + "in less than 50 hops."
+          else:
+              warnings.warn(response.text)
+
+      def title_check(ev):
+          """Get the accurate titles."""
+          req = ajax.ajax()
+          req.bind('complete', show_titles)
+          req.open('POST', '/get_titles', True)
+          req.set_header('content-type','application/json')
+          data = json.dumps({'start': document['start'].value, 'target': document['target'].value})
+          req.send(data)
 
       def start_wikigolf(ev):
           """Get the predicted probability."""

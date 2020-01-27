@@ -24,7 +24,7 @@ def find_page():
 def get_titles():
     """Return the titles of the input pages."""
     data = request.json
-    c = wikipedia.page(data['current'])
+    s = wikipedia.page(data['start'])
     t = wikipedia.page(data['target'])
-    return jsonify({'current':c, 'target':t})
+    return jsonify({'start':s.title, 'target':t.title})
 
