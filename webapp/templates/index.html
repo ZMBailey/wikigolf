@@ -45,8 +45,8 @@
       def show_titles(response):
           if response.status==200 or response.status==0:
               data = json.loads(response.response)
-              document["display_start"].html = "Starting page: " + data['start']"
-              document["display_target"].html = "Target page: " + data['target']"
+              document["display_start"].html = "Starting page: " + data['start']
+              document["display_target"].html = "Target page: " + data['target']
               start_wikigolf()
           else:
               warnings.warn(response.text)
