@@ -45,10 +45,9 @@
       def show_titles(response):
           if response.status==200 or response.status==0:
               data = json.loads(response.response)
-              if data['found']:
-                  document["title"].html = "Found " + data['title'] + " in " + str(data['hops']) + " hops!"
-              else:
-                  document["title"].html = "Did not find " + document['target'].value + "in less than 50 hops."
+              document["display_start"].html = "Starting page: " + data['start']"
+              document["display_target"].html = "Target page: " + data['target']"
+              start_wikigolf()
           else:
               warnings.warn(response.text)
 
@@ -61,7 +60,7 @@
           data = json.dumps({'start': document['start'].value, 'target': document['target'].value})
           req.send(data)
 
-      def start_wikigolf(ev):
+      def start_wikigolf():
           """Get the predicted probability."""
           req = ajax.ajax()
           req.bind('complete', show_results)
@@ -70,7 +69,7 @@
           data = json.dumps({'start': document['start'].value, 'target': document['target'].value})
           req.send(data)
 
-      document["search_button"].bind("click", start_wikigolf)
+      document["search_button"].bind("click", title_check)
     </script>
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" style="display:none;" id="mainNav">
