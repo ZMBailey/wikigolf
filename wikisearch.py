@@ -97,7 +97,7 @@ def make_model_new(path):
         text.append(new_sent)
     
     #create model
-    model = gensim.models.Word2Vec(text,sg=1)
+    model = gensim.models.Word2Vec(text,sg=1,min_count=2)
     model.train(text, total_examples=model.corpus_count, epochs=model.epochs)
     return model
 
