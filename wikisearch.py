@@ -189,3 +189,9 @@ def run_golf(start,target):
         return title, exit, i
     else:
         return closest[0], exit, i
+
+    
+#inputs -> start, subject, subject (any number?)
+#start should be similar to target subject
+#look for links related to subjects
+#find page with common words.
